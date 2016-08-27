@@ -4,17 +4,27 @@ function load_landmasses(){
 	land.position.x = 0.0;
 	land.position.y = 0.0;
 
-	var land1 = new PIXI.Graphics();
+	var land1 = new PIXI.Container(); 
 
-	land1.beginFill(0xFFFF00);
+	graphics = new PIXI.Graphics();
+
+	graphics.beginFill(0xFFFF00);
 
 	
 	// set the line style to have a width of 5 and set the color to red
-	land1.lineStyle(5, 0xFF0000);
-	land1.drawRect(1100, 500, 300, 200);
+	graphics.lineStyle(5, 0xFF0000);
+	graphics.drawRect(0, 0, 300, 200);
+
+	// add graphics to container
+	land1.addChild(graphics)
+
+
 //	land1.setTransform(900, 500, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0)
 	land1.position.x = 900;
 	land1.position.y = 500;
+	land1.w = 300;
+	land1.h = 200;  // only relevent to this, otherwise  use width and height
+
 
 	// draw a rectangle
 	
@@ -22,18 +32,26 @@ function load_landmasses(){
 
 	land.addChild(land1);
 
-	var land2 = new PIXI.Graphics();
 
-	land1.beginFill(0xFFFF00);
+	var land1 = new PIXI.Container(); 
 
+	graphics = new PIXI.Graphics();
+
+	graphics.beginFill(0xFFFF00);
+
+	
 	// set the line style to have a width of 5 and set the color to red
-	land1.lineStyle(5, 0xFF0000);
+	graphics.lineStyle(5, 0xFF0000);
+	graphics.drawRect(0, 0, 300, 200);
 
-	// draw a rectangle
-	land1.drawRect(100, 100, 300, 200);
+	// add graphics to container
+	land1.addChild(graphics)
+
 //	land2.setTransform(300, 200, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0)
 	land1.position.x = 100;
 	land1.position.y = 100;
+	land1.w = 300;
+	land1.h = 200;
 
 	land.addChild(land1);
 
@@ -45,10 +63,39 @@ function load_landmasses(){
 	
 }
 
+function isIntersecting(r1,r2){
+	// check intersection with rectangles
+
+	
+	var centpoint = new PIXI.Point(0.0,0.0);
+
+	console.log("land");
+	var x = r1.toGlobal(centpoint)["x"];
+	var y = r1.toGlobal(centpoint)["y"];
+	var dude_x = r2.toGlobal(centpoint)["x"];
+	var dude_y = r2.toGlobal(centpoint)["y"];
+	console.log(r1.toGlobal(centpoint));
+	console.log("you");
+	console.log(r2.toGlobal(centpoint));
+	return !(dude_x > (x + r1.w) || 
+
+           (dude_x + r2.w) < x || 
+
+           dude_y > (y + r1.h) ||
+
+           (dude_y + r2.h) < y);
+
+}
+
+//isIntersecting = function(r1, r2) {
+//
+//
+//}
+
 
 function load_dude(){
 
-    var movespeed = 5
+    var movespeed = 20.0
 
     function setup_dude(){
 
@@ -65,6 +112,11 @@ function load_dude(){
        // set the scale
        dude.scale.x = 1.5;
        dude.scale.y = 1.5;
+
+
+       dude.w = 50 * dude.scale.x;
+       dude.h = 50 * dude.scale.y;
+
 
        dude.vx = 0;
        dude.vy = 0;
@@ -196,14 +248,28 @@ function keyboard(keyCode) {
 
 
 function gameLoop() {
-  requestAnimationFrame(gameLoop);
-  play();
-  window.renderer.render(window.stage);
+	var fps = 30.0;
+	setTimeout(function() {
+		requestAnimationFrame(gameLoop); 
+      		  // ... Code for Drawing the Frame ...
+		play();
+		window.renderer.render(window.stage); 
+	}, 1000.0 / fps);
+
 }
 
 function play(){
 	// use this to determine what moves etc
 	// negative because relative
-	window.land.position.x += - window.dude.vx;
-	window.land.position.y += - window.dude.vy;
+	var collided = false;
+	window.land.children.forEach(function(item){
+		collided = isIntersecting(item,window.dude);
+	});
+	if (collided == false){
+		window.land.x += - window.dude.vx;
+		window.land.y += - window.dude.vy;
+	}
+	console.log("land all");
+	console.log(window.land.x);
+	console.log(window.land.y);
 }
