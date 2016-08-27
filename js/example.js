@@ -1,8 +1,8 @@
 function load_landmasses(){
 
 	var land = new PIXI.Container();
-	land.position.x = 0;
-	land.position.y = 0;
+	land.position.x = 0.0;
+	land.position.y = 0.0;
 
 	var land1 = new PIXI.Graphics();
 
@@ -10,6 +10,7 @@ function load_landmasses(){
 
 	// set the line style to have a width of 5 and set the color to red
 	land1.lineStyle(5, 0xFF0000);
+//	land1.setTransform(900, 500, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0)
 	land1.position.x = 900;
 	land1.position.y = 500;
 
@@ -28,12 +29,15 @@ function load_landmasses(){
 
 	// draw a rectangle
 	land2.drawRect(300, 100, 300, 200);
+//	land2.setTransform(300, 200, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0)
 	land2.position.x = 300;
 	land2.position.y = 200;
 
 	land.addChild(land2);
 
 	window.stage.addChild(land);
+	window.land.x = 0.0;
+	window.land.y = 0.0;
 	
 }
 
@@ -188,7 +192,7 @@ function keyboard(keyCode) {
 function gameLoop() {
   requestAnimationFrame(gameLoop);
   play();
-  window.renderer.render(window.stage);
+ // window.renderer.render(window.stage);
 }
 
 function play(){
