@@ -21,7 +21,7 @@ npm install -g nw-builder
 
 # running for the first time
 
-in the directory of newdriftinghurskarl
+in the directory of ship
 
 nodewebkit .
 
@@ -53,7 +53,7 @@ make sure you have done
 
 npm install -g nw-builder
 
-nwbuild newdriftinghurskarl/ -v 0.12.0 -p linux64 -o build/
+nwbuild ship/ -v 0.12.0 -p linux64 -o build/
 #NB do it one directory up, otherwise successive builds are going to include the build in (or maybe there is a way to ignore)
 
 and then you will have your executable
