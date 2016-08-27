@@ -20,36 +20,25 @@ function load_landmasses(){
 	// add graphics to container
 	land1.addChild(graphics)
 
-
-//	land1.setTransform(900, 500, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0)
 	land1.position.x = 900;
 	land1.position.y = 500;
 	land1.w = 300;
 	land1.h = 200;  // only relevent to this, otherwise  use width and height
-
-
-	// draw a rectangle
-	
-
-
 	land.addChild(land1);
 
 
 	var land1 = new PIXI.Container(); 
 
 	graphics = new PIXI.Graphics();
-
 	graphics.beginFill(0xFFFF00);
 
-	
 	// set the line style to have a width of 5 and set the color to red
 	graphics.lineStyle(5, 0xFF0000);
 	graphics.drawRect(0, 0, 300, 200);
 
 	// add graphics to container
-	land1.addChild(graphics)
+	land1.addChild(graphics);
 
-//	land2.setTransform(300, 200, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0)
 	land1.position.x = 100;
 	land1.position.y = 100;
 	land1.w = 300;
@@ -61,7 +50,7 @@ function load_landmasses(){
 	//window.land = land
 	land.position.x = 0.0;
 	land.position.y = 0.0;
-	window.land = land
+	window.land = land;
 	
 }
 
@@ -74,30 +63,48 @@ function isIntersecting(r1,r2){
 	console.log("land");
 	var x = r1.toGlobal(centpoint)["x"];
 	var y = r1.toGlobal(centpoint)["y"];
-	var dude_x = r2.toGlobal(centpoint)["x"];
-	var dude_y = r2.toGlobal(centpoint)["y"];
+	var dude_x = r2.toGlobal(centpoint)["x"] + r2.vx;
+	var dude_y = r2.toGlobal(centpoint)["y"] + r2.vy;
 	console.log(r1.toGlobal(centpoint));
 	console.log("you");
 	console.log(r2.toGlobal(centpoint));
 	return !(dude_x > (x + r1.w) || 
-
            (dude_x + r2.w) < x || 
-
            dude_y > (y + r1.h) ||
-
            (dude_y + r2.h) < y);
 
 }
 
-//isIntersecting = function(r1, r2) {
-//
-//
-//}
 
+function stopIntersecting(r1,r2){
+	// check intersection with rectangles
+
+	var centpoint = new PIXI.Point(0.0,0.0);
+	var intersects = isIntersecting(r1,r2);
+
+	if (intersects == true){
+		var dude_x = r2.toGlobal(centpoint)["x"] + r2.vx;
+		var dude_y = r2.toGlobal(centpoint)["y"] + r2.vy;
+		var x = r1.toGlobal(centpoint)["x"];
+		var y = r1.toGlobal(centpoint)["y"];
+		if ((dude_x <= (x + r1.w) && (dude_x + r2.w) >= x) == true){
+			if ((dude_y <= (y + r1.h) && (dude_y + r2.h) >= y) == true)  {
+				return 3;
+			} else {
+				return 1; // code for x velocity
+				};
+		};
+		if ((dude_y <= (y + r1.h) && (dude_y + r2.h) >= y) == true){
+			return 2;
+		};
+
+	};
+	return 0;
+}
 
 function load_dude(){
 
-    var movespeed = 20.0
+    var movespeed = 20.0;
 
     function setup_dude(){
 
@@ -108,8 +115,8 @@ function load_dude(){
        dude.position.y = 360;
 
        // set the anchor point
-       dude.anchor.x = 0.5;
-       dude.anchor.y = 0.5;
+       dude.anchor.x = 0.0;
+       dude.anchor.y = 0.0;
 
        // set the scale
        dude.scale.x = 1.5;
@@ -118,6 +125,9 @@ function load_dude(){
 
        dude.w = 50 * dude.scale.x;
        dude.h = 50 * dude.scale.y;
+
+       dude.position.x = dude.position.x - (dude.w / 2.0);
+       dude.position.y = dude.position.y - (dude.h / 2.0);
 
 
        dude.vx = 0;
@@ -263,17 +273,35 @@ function gameLoop() {
 function play(){
 	// use this to determine what moves etc
 	// negative because relative
-	var collided = false;
-	window.land.children.forEach(function(item){
-		collided = isIntersecting(item,window.dude);
-		if (collided == true){
-			crash = true;
-		}
+	var collided;
+	// we want to check if the velocity in the said direction will cause a clash afterwards.
+	window.land.children.some(function(item){
+		collided = stopIntersecting(item,window.dude);
+		return collided !== 0;
+		
 	});
-	if (crash == false){
+	if (collided == 0){
 		window.land.x += - window.dude.vx;
 		window.land.y += - window.dude.vy;
-	}
+	};
+
+	if (collided == 1){
+		window.land.x += 0.0;
+		window.land.y += - window.dude.vy;
+	};
+
+	if (collided == 2){
+		window.land.x += - window.dude.vx;
+		window.land.y += 0.0;
+	};
+
+	if (collided == 3){
+		window.land.x += 0.0;
+		window.land.y += 0.0;
+	};
+
+
+
 	console.log("land all");
 	console.log(window.land.x);
 	console.log(window.land.y);
