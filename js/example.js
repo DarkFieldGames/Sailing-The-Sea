@@ -1,6 +1,3 @@
-var dude;
-var land;
-
 function load_landmasses(){
 
 	var land = new PIXI.Container();
@@ -13,6 +10,8 @@ function load_landmasses(){
 
 	// set the line style to have a width of 5 and set the color to red
 	land1.lineStyle(5, 0xFF0000);
+	land1.position.x = 900;
+	land1.position.y = 500;
 
 	// draw a rectangle
 	land1.drawRect(900, 500, 300, 200);
@@ -29,6 +28,9 @@ function load_landmasses(){
 
 	// draw a rectangle
 	land2.drawRect(300, 100, 300, 200);
+	land2.position.x = 300;
+	land2.position.y = 200;
+
 	land.addChild(land2);
 
 	window.stage.addChild(land);
@@ -137,7 +139,9 @@ function load_dude(){
        gameLoop();
    };
 
+   load_landmasses();
    PIXI.loader.add("dude","./assets/ship.jpg").load(setup_dude);
+   
       // This creates a texture from a 'dude.png' image.
   
 }
@@ -189,6 +193,6 @@ function gameLoop() {
 
 function play(){
 	// use this to determine what moves etc
-	window.dude.x += window.dude.vx;
-	window.dude.y += window.dude.vy;
+	window.land.position.x += window.dude.vx;
+	window.land.position.y += window.dude.vy;
 }
