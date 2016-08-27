@@ -1,10 +1,11 @@
 var dude;
+var land;
 
 function load_landmasses(){
 
-	var land = PIXI.DisplayObjectContainer();
-
-
+	var land = new PIXI.Container();
+	land.position.x = 0;
+	land.position.y = 0;
 
 	var land1 = new PIXI.Graphics();
 
@@ -30,11 +31,7 @@ function load_landmasses(){
 	land2.drawRect(300, 100, 300, 200);
 	land.addChild(land2);
 
-	land.position.x = 0
-	land.position.y = 0
-
 	window.stage.addChild(land);
-
 	
 }
 
@@ -191,7 +188,7 @@ function gameLoop() {
 }
 
 function play(){
-	
+	// use this to determine what moves etc
 	window.dude.x += window.dude.vx;
 	window.dude.y += window.dude.vy;
 }
