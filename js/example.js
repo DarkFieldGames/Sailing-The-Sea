@@ -1,9 +1,41 @@
 var dude;
 
 function load_landmasses(){
-	graphics.lineStyle(2, 0x0000FF, 1);
-	graphics.beginFill(0xFF700B, 1);
-	graphics.drawRect(50, 250, 120, 120);
+
+	var land = PIXI.DisplayObjectContainer();
+
+
+
+	var land1 = new PIXI.Graphics();
+
+	land1.beginFill(0xFFFF00);
+
+	// set the line style to have a width of 5 and set the color to red
+	land1.lineStyle(5, 0xFF0000);
+
+	// draw a rectangle
+	land1.drawRect(900, 500, 300, 200);
+
+
+	land.addChild(land1);
+
+	var land2 = new PIXI.Graphics();
+
+	land2.beginFill(0xFFFF00);
+
+	// set the line style to have a width of 5 and set the color to red
+	land2.lineStyle(5, 0xFF0000);
+
+	// draw a rectangle
+	land2.drawRect(300, 100, 300, 200);
+	land.addChild(land2);
+
+	land.position.x = 0
+	land.position.y = 0
+
+	window.stage.addChild(land);
+
+	
 }
 
 
