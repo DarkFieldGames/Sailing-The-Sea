@@ -1,0 +1,59 @@
+sudo apt-get install node (nodejs)
+sudo apt-get install nodejs-legacy ( see http://stackoverflow.com/questions/21168141/cannot-install-packages-using-node-package-manager-in-ubuntu )
+sudo apt-get install npm (node package manager)
+
+may also need 
+sudo apt-get install build-essential libssl-dev
+
+now for the package. This is somewhat similar to python pip
+sudo npm install -g nodewebkit
+
+
+ON UBUNTU/DEBIAN you may need to do the below
+
+See http://askubuntu.com/questions/288821/how-do-i-resolve-a-cannot-open-shared-object-file-libudev-so-0-error. Game dev tychoon is a game based of node webkit, and it kinda needs the right symlink here.
+
+sudo ln -sf /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
+
+get the builder 
+
+npm install -g nw-builder
+
+# running for the first time
+
+in the directory of newdriftinghurskarl
+
+nodewebkit .
+
+ARROW FUNCTIONS IN NODE JS
+http://stackoverflow.com/questions/19644341/node-js-support-for-function-keyword-alias 
+does not seem to like the => function keyword alais
+
+might be able to help, otherwise enjoy your compiler errors
+out.area = out.size.reduce((prev,curr) => prev*curr);
+
+SyntaxError: Unexpected token =>
+    at exports.runInThisContext (vm.js:69:16)
+    at Module._compile (module.js:437:25)
+    at Object.Module._extensions..js (module.js:472:10)
+    at Module.load (module.js:354:32)
+    at Function.Module._load (module.js:310:12)
+    at Module.require (module.js:362:17)
+    at require (module.js:378:17)
+    at /home/ben/dark field games/newdriftinghurskarl/index.js:2:17
+    at Object.<anonymous> (/home/ben/dark field games/newdriftinghurskarl/index.js:4:3)
+    at Module._compile (module.js:454:26)
+
+npm install es6-arrow-function
+
+
+# compiling
+
+make sure you have done
+
+npm install -g nw-builder
+
+nwbuild newdriftinghurskarl/ -v 0.12.0 -p linux64 -o build/
+#NB do it one directory up, otherwise successive builds are going to include the build in (or maybe there is a way to ignore)
+
+and then you will have your executable

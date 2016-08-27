@@ -1,0 +1,22 @@
+{
+  "name": "newdriftinghurskarl",
+  "version": "0.0.1",
+  "node-main": "index.js",
+  "chromium-args": "--enable-webgl --ignore-gpu-blacklist --enable-accelerated-2d-canvas --disable-pinch --disable-setuid-sandbox --allow-file-access-from-files",
+  "main": "index.html",
+  "keywords": [
+    "demo",
+    "node-webkit"
+  ],
+  "window": {
+    "frame": true,
+    "toolbar": false,
+    "width": 1280,
+    "height": 720,
+    "resizable": false,
+    "backgroundColor": "#ffffff"
+  },
+  "dependencies": {
+    "pixi.js": "~4.0.0"
+  }
+}

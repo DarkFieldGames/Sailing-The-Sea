@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Ship</title>
+  </head>
+  <script src="./node_modules/pixi.js/bin/pixi.js"></script> <!-- loads the pixi.js context into the view -->
+  <script src="./js/example.js"></script>
+  <link rel="stylesheet" type="text/css" href="./css/main.css">
+  <body onload="init()" style="background-color: #3333ff;">
+  <div align="center">
+    <canvas id="game-canvas" width="1280" height="720", style="background-color: #3333ff;"></canvas>
+  </div>
+  <script>
+	function init(){
+
+		var Container = PIXI.Container;
+		//autoDetectRenderer = PIXI.autoDetectRenderer,
+		var renderer = new PIXI.CanvasRenderer(1280, 720, {view:document.getElementById("game-canvas"), backgroundColor:0xffffff});
+		renderer.backgroundColor = 0x3333ff; 
+		renderer.autoResize = true;
+		renderer.resize(1280, 720);
+		renderer.view.style.position = "absolute";
+		renderer.view.style.display = "block";
+
+    		loader = PIXI.loader;
+  		resources = PIXI.loader.resources;
+    		Sprite = PIXI.Sprite;
+		var stage = new PIXI.Container();
+		window.stage = stage;
+		window.container = Container;
+		window.loader = loader;
+		window.resources = resources;
+		window.Sprite = Sprite;
+		// todo, get this compatible with WebGL
+		
+		window.renderer = renderer;
+		window.renderer.resize(window.innerWidth, window.innerHeight);
+		window.renderer.render(window.stage);
+
+        load_dude();
+
+		//Capture the keyboard arrow keys
+
+/*		window.left = left;
+		window.right = right;
+		window.up = up;
+		window.down = down;
+	
+		window.left.press = movedude("left");
+		window.left.release = releasedude("left");	
+		window.right.press = movedude("right");
+		window.right.release = releasedude("right");	
+		window.up.press = movedude("up");
+		window.up.release = releasedude("up");	
+		window.down.press = movedude("down");
+		window.down.release = releasedude("down"); */	
+
+
+	}
+
+  </script>
+  </body>
+
+</html>
