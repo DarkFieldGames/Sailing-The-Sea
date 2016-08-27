@@ -8,41 +8,47 @@ function load_landmasses(){
 
 	land1.beginFill(0xFFFF00);
 
+	
 	// set the line style to have a width of 5 and set the color to red
 	land1.lineStyle(5, 0xFF0000);
+	land1.drawRect(1100, 500, 300, 200);
 //	land1.setTransform(900, 500, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0)
 	land1.position.x = 900;
 	land1.position.y = 500;
 
 	// draw a rectangle
-	land1.drawRect(900, 500, 300, 200);
+	
 
 
 	land.addChild(land1);
 
 	var land2 = new PIXI.Graphics();
 
-	land2.beginFill(0xFFFF00);
+	land1.beginFill(0xFFFF00);
 
 	// set the line style to have a width of 5 and set the color to red
-	land2.lineStyle(5, 0xFF0000);
+	land1.lineStyle(5, 0xFF0000);
 
 	// draw a rectangle
-	land2.drawRect(300, 100, 300, 200);
+	land1.drawRect(100, 100, 300, 200);
 //	land2.setTransform(300, 200, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0)
-	land2.position.x = 300;
-	land2.position.y = 200;
+	land1.position.x = 100;
+	land1.position.y = 100;
 
-	land.addChild(land2);
+	land.addChild(land1);
 
 	window.stage.addChild(land);
-	window.stage.land.position.x = 0.0;
-	window.stage.land.position.y = 0.0;
+	//window.land = land
+	land.position.x = 0.0;
+	land.position.y = 0.0;
+	window.land = land
 	
 }
 
 
 function load_dude(){
+
+    var movespeed = 5
 
     function setup_dude(){
 
@@ -93,7 +99,7 @@ function load_dude(){
 
 
        window.left.press = function() {
-				window.dude.vx = -2;
+				window.dude.vx = -movespeed;
 				window.dude.vy = 0;
 			};
 
@@ -107,7 +113,7 @@ function load_dude(){
 			};
 	
        window.right.press = function() {
-				window.dude.vx = 2;
+				window.dude.vx = movespeed;
 				window.dude.vy = 0;
 			};
 
@@ -119,7 +125,7 @@ function load_dude(){
 	
        window.up.press = function() {
 				window.dude.vx = 0;
-				window.dude.vy = -2;
+				window.dude.vy = -movespeed;
 			};
 
        window.up.release = function() {
@@ -131,7 +137,7 @@ function load_dude(){
 
        window.down.press = function() {
 				window.dude.vx = 0;
-				window.dude.vy = 2;
+				window.dude.vy = movespeed;
 			};
 
        window.down.release = function() {
@@ -192,11 +198,12 @@ function keyboard(keyCode) {
 function gameLoop() {
   requestAnimationFrame(gameLoop);
   play();
- // window.renderer.render(window.stage);
+  window.renderer.render(window.stage);
 }
 
 function play(){
 	// use this to determine what moves etc
-	window.stage.land.position.x += window.dude.vx;
-	window.stage.land.position.y += window.dude.vy;
+	// negative because relative
+	window.land.position.x += - window.dude.vx;
+	window.land.position.y += - window.dude.vy;
 }
