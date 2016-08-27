@@ -1,3 +1,5 @@
+var crash = false;
+
 function load_landmasses(){
 
 	var land = new PIXI.Container();
@@ -264,8 +266,11 @@ function play(){
 	var collided = false;
 	window.land.children.forEach(function(item){
 		collided = isIntersecting(item,window.dude);
+		if (collided == true){
+			crash = true;
+		}
 	});
-	if (collided == false){
+	if (crash == false){
 		window.land.x += - window.dude.vx;
 		window.land.y += - window.dude.vy;
 	}
