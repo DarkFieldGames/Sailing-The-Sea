@@ -36,8 +36,8 @@ function load_landmasses(){
 	land.addChild(land2);
 
 	window.stage.addChild(land);
-	window.land.x = 0.0;
-	window.land.y = 0.0;
+	window.stage.land.position.x = 0.0;
+	window.stage.land.position.y = 0.0;
 	
 }
 
@@ -197,6 +197,6 @@ function gameLoop() {
 
 function play(){
 	// use this to determine what moves etc
-	window.land.position.x += window.dude.vx;
-	window.land.position.y += window.dude.vy;
+	window.stage.land.position.x += window.dude.vx;
+	window.stage.land.position.y += window.dude.vy;
 }
