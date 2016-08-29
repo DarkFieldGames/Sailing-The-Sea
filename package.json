@@ -1,5 +1,5 @@
 {
-  "name": "ship",
+  "name": "sailing_the_sea",
   "version": "0.0.1",
   "node-main": "index.js",
   "chromium-args": "--enable-webgl --ignore-gpu-blacklist --enable-accelerated-2d-canvas --disable-pinch --disable-setuid-sandbox --allow-file-access-from-files",

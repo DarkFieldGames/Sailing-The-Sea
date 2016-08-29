@@ -125,7 +125,7 @@ function load_whirlpools(){
 	var wpools = randomIntFromInterval(40,60);
 	for (i = 0; i < wpools; i++){
 		var size = randomIntFromInterval(100,250);
-		var rate = randomIntFromInterval(0.5,3.0);
+		var rate = randomIntFromInterval(0.2,1.0);
 		var big = randomIntFromInterval(2.0,5.0);
 		var small = randomIntFromInterval(2.0,5.0);
 		var listitem = list[randomIntFromInterval(0.0,1.0)]
