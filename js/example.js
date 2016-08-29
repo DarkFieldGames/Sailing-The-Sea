@@ -1,4 +1,6 @@
-var crash = false;
+var fps = 60.0;
+// for http://stackoverflow.com/questions/24775725/loop-through-childnodes // http://stackoverflow.com/a/24775765
+NodeList.prototype.forEach = Array.prototype.forEach
 
 function load_landmasses(){
 
@@ -21,7 +23,7 @@ function load_whirlpools(){
 	whirlpools.position.x = 0.0;
 	whirlpools.position.y = 0.0;
 
-	add_whirlpool(whirlpools,900,100,100,100,2,2,5,3);
+	add_whirlpool(whirlpools,900,100,100,100,1,1,4,3,"active");
 
 	window.world.addChild(whirlpools);
 	//window.land = land
@@ -36,14 +38,10 @@ function isIntersecting(r1,r2){
 	
 	var centpoint = new PIXI.Point(0.0,0.0);
 
-	console.log("land");
 	var x = r1.toGlobal(centpoint)["x"];
 	var y = r1.toGlobal(centpoint)["y"];
 	var dude_x = r2.toGlobal(centpoint)["x"] + r2.vx - (r2.w / 2.0);
 	var dude_y = r2.toGlobal(centpoint)["y"] + r2.vy - (r2.h / 2.0) ;
-	console.log(r1.toGlobal(centpoint));
-	console.log("you");
-	console.log(r2.toGlobal(centpoint));
 	return !(dude_x > (x + r1.w) || 
            (dude_x + r2.w) < x || 
            dude_y > (y + r1.h) ||
@@ -80,7 +78,7 @@ function stopIntersecting(r1,r2){
 
 function load_dude(){
 
-    var movespeed = 20.0;
+    var movespeed = 600.0 / fps;
 
     function setup_dude(){
 
@@ -240,7 +238,8 @@ function keyboard(keyCode) {
 
 
 function gameLoop() {
-	var fps = 30.0;
+	// for some time in the future http://gamedev.stackexchange.com/questions/1589/when-should-i-use-a-fixed-or-variable-time-step
+
 	setTimeout(function() {
 		requestAnimationFrame(gameLoop); 
       		  // ... Code for Drawing the Frame ...
@@ -260,6 +259,14 @@ function play(){
 		return collided !== 0;
 		
 	});
+
+	
+	window.whirlpools.children.forEach(function(wpool){
+		wpool.animate();
+	});
+
+
+
 	if (collided == 0){
 		window.world.x += - window.dude.vx;
 		window.world.y += - window.dude.vy;
@@ -280,8 +287,4 @@ function play(){
 		window.world.y += 0.0;
 	};
 	
-
-	console.log("land all");
-	console.log(window.land.x);
-	console.log(window.land.y);
 }

@@ -1,3 +1,5 @@
+var fps = 60.0;
+
 function add_landmass(land,x,y,w,h){
 
 	var land1 = new PIXI.Container();
@@ -20,8 +22,63 @@ function add_landmass(land,x,y,w,h){
 	
 }
 
-function add_whirlpool(whirlpools,x,y,w,h,shrink,grow,big,small){
+function add_whirlpool(whirlpools,x,y,w,h,shrink,grow,big,small,status){
 
+	// whirlpool states = active, grow, shrink, inactive
+	// loop between active, shrink, inactive, grow
+
+	function animate(){
+		console.log("animate");
+		console.log(this.status);
+		console.log(this.big);
+		console.log(this.time);
+		if (this.status == "active") {
+			if (this.time > this.big) {
+				this.status = "shrink";
+				this.time = 0.0;
+			};
+		};
+
+		if (this.status == "shrink") {
+			if (this.time > this.shrinkrate) {
+				this.status = "inactive";
+				this.time = 0.0;
+			} else {
+				this.scale.x = this.scale.x - (1.0 / (fps * this.shrinkrate));
+				this.scale.y = this.scale.y - (1.0 / (fps * this.shrinkrate));
+			};
+			if (this.scale.x < 0.0){
+				this.scale.x = 0.0;
+				this.scale.y = 0.0;
+			};
+		};
+
+		if (this.status == "inactive") {
+			if (this.time > this.small) {
+				this.status = "grow";
+				this.time = 0.0;
+			};
+		};
+
+		if (this.status == "grow") {
+			if (this.time > this.growthrate) {
+				this.status = "active";
+				this.time = 0.0;
+			} else {
+				this.scale.x = this.scale.x + (1.0 / (this.growthrate * fps));
+				this.scale.y = this.scale.y + (1.0 / (this.growthrate * fps));
+			};
+			if (this.scale.x > 1.0){
+				this.scale.x = 1.0;
+				this.scale.y = 1.0;
+			};
+		};
+
+
+		this.time = this.time + (1.0 / fps);
+		
+	}
+		
 	// create a texture from an image path
 	var texture = PIXI.Texture.fromImage('assets/whirlpool.png');
 	// create a new Sprite using the texture
@@ -29,6 +86,8 @@ function add_whirlpool(whirlpools,x,y,w,h,shrink,grow,big,small){
 
 	wpool.position.x = x;
 	wpool.position.y = y;
+	wpool.anchor.x = 0.5
+	wpool.anchor.y = 0.5
 	wpool.w = w;
 	wpool.h = h;  // only relevent to this, otherwise  use width and height
 
@@ -36,6 +95,9 @@ function add_whirlpool(whirlpools,x,y,w,h,shrink,grow,big,small){
 	wpool.growthrate = grow; // how long it takes for the whirlpool to grow (in seconds)
 	wpool.big = big; // how long the whirlpool should stay max size for
 	wpool.small = small; // how long the whirlpool should shrink for
+	wpool.status = "active";
+	wpool.time = 0.0
+	wpool.animate = animate
 
 	whirlpools.addChild(wpool);
 	
