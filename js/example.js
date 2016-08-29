@@ -1,6 +1,6 @@
 var fps = 60.0;
 var world_x_small = -50;
-var world_x_large = 3950.0;
+var world_x_large = 6950.0;
 var world_y_small = -50;
 var world_y_large = 3950.0;
 // for http://stackoverflow.com/questions/24775725/loop-through-childnodes // http://stackoverflow.com/a/24775765
@@ -9,6 +9,15 @@ var map_height = 700;
 var map_width = 1260;
 var map_dx = map_width / (world_x_large - world_x_small);
 var map_dy = map_height / (world_y_large - world_y_small);
+var dude_start_x = 640;
+var dude_start_y = 360;
+
+
+function randomIntFromInterval(min,max)
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
+
 
 function load_map(){
 	// create a texture from an image path
@@ -62,17 +71,47 @@ function load_map(){
 
 function load_landmasses(){
 
+
 	var land = new PIXI.Container();
 	land.position.x = 0.0;
 	land.position.y = 0.0;
 
-	add_landmass(land,900,500,300,200);
-	add_landmass(land,100,100,300,200);
+	// procedual generation
+	// how many lands
+
+	var lands = randomIntFromInterval(150,200);
+	for (i = 0; i < lands; i++){
+		var size_x = randomIntFromInterval(100,300);
+		var size_y = randomIntFromInterval(100,300);
+		var land_x = randomIntFromInterval(world_x_small,world_x_large + dude_start_x);
+		if (land_x < dude_start_x + size_x || land_x > world_x_large - dude_start_x - size_x){
+			land_y = randomIntFromInterval(world_y_small + dude_start_y + size_y,world_y_large - dude_start_y - size_y);
+		} else {
+			land_y = randomIntFromInterval(world_y_small,world_y_large + dude_start_y);
+		};
+		add_landmass(land,land_x,land_y,size_x,size_y);
+	}
+
 
 	window.world.addChild(land);
 	//window.land = land
 	window.land = land;
+
+
+// load the outter boundaries
+
+	edge = new PIXI.Graphics();
+//	graphics.beginFill(0xFFFF00);
+
 	
+	// set the line style to have a width of 5 and set the color to red
+
+	edge.lineStyle(3, 0xFF0000);
+	edge.drawRect(world_x_small + dude_start_x - 30, world_y_small + dude_start_y - 30, world_x_large + 30, world_y_large + 30);
+		
+	window.world.addChild(edge);
+
+
 }
 
 function load_whirlpools(){
@@ -80,7 +119,25 @@ function load_whirlpools(){
 	var whirlpools = new PIXI.Container();
 	whirlpools.position.x = 0.0;
 	whirlpools.position.y = 0.0;
-	add_whirlpool(whirlpools,900,100,100,100,1.0,1.0,5.0,2.0,"active");
+	var list = ["active","inactive"];
+
+
+	var wpools = randomIntFromInterval(40,60);
+	for (i = 0; i < wpools; i++){
+		var size = randomIntFromInterval(100,250);
+		var rate = randomIntFromInterval(0.5,3.0);
+		var big = randomIntFromInterval(2.0,5.0);
+		var small = randomIntFromInterval(2.0,5.0);
+		var listitem = list[randomIntFromInterval(0.0,1.0)]
+		var land_x = randomIntFromInterval(world_x_small,world_x_large + dude_start_x);
+		if (land_x < dude_start_x + size || land_x > world_x_large - dude_start_x - size){
+			land_y = randomIntFromInterval(world_y_small + dude_start_y + size,world_y_large - dude_start_y - size);
+		} else {
+			land_y = randomIntFromInterval(world_y_small,world_y_large + dude_start_y);
+		};
+		add_whirlpool(whirlpools,land_x,land_y,size,size,rate,rate,big,small,listitem);
+	}
+
 
 	window.world.addChild(whirlpools);
 	//window.land = land
@@ -95,7 +152,26 @@ function load_tornados(){
 	tornados.position.x = 0.0;
 	tornados.position.y = 0.0;
 
-	add_tornado(tornados,100,600,100,100,0.5,600.0,"up");
+	var list = ["left","right", "up","down"];
+
+
+	var tnados = randomIntFromInterval(50,70);
+	for (i = 0; i < tnados; i++){
+		var size = randomIntFromInterval(100,300);
+		var rate = randomIntFromInterval(1.0,3.0);
+		var speed = randomIntFromInterval(400,700);
+		var listitem = list[randomIntFromInterval(0.0,3.0)]
+		var land_x = randomIntFromInterval(world_x_small,world_x_large + dude_start_x);
+		if (land_x < dude_start_x + size || land_x > world_x_large - dude_start_x - size){
+			land_y = randomIntFromInterval(world_y_small + dude_start_y + size,world_y_large - dude_start_y - size);
+		} else {
+			land_y = randomIntFromInterval(world_y_small,world_y_large + dude_start_y);
+		};
+		add_tornado(tornados,land_x,land_y,size,size,rate,speed,listitem);
+	}
+
+
+	//add_tornado(tornados,100,600,100,100,0.5,600.0,"up");
 
 	window.world.addChild(tornados);
 	//window.land = land
@@ -113,15 +189,22 @@ function checkCollision(threat,dude){
 
 function isIntersecting(r1,r2){
 	// check intersection with rectangles
-
 	
+
 	var centpoint = new PIXI.Point(0.0,0.0);
 
-	var x = r1.toGlobal(centpoint)["x"];
-	var y = r1.toGlobal(centpoint)["y"];
+	// check if r1 has an anchor
+
+	if (typeof(r1.anchor) !== 'undefined'){
+		var x = r1.toGlobal(centpoint)["x"] - (r1.w * r1.scale.x / 2.0);
+		var y = r1.toGlobal(centpoint)["y"] - (r1.h * r1.scale.y / 2.0);			
+	} else {
+		var x = r1.toGlobal(centpoint)["x"];
+		var y = r1.toGlobal(centpoint)["y"];
+	};
 	var dude_x = r2.toGlobal(centpoint)["x"] + r2.vx - (r2.w / 2.0);
-	var dude_y = r2.toGlobal(centpoint)["y"] + r2.vy - (r2.h / 2.0) ;
-	return !(dude_x > (x + r1.w) || 
+	var dude_y = r2.toGlobal(centpoint)["y"] + r2.vy - (r2.h / 2.0);
+	return !(dude_x > (x + r1.w)  || 
            (dude_x + r2.w) < x || 
            dude_y > (y + r1.h) ||
            (dude_y + r2.h) < y);
@@ -164,8 +247,8 @@ function load_dude(){
        dude = new PIXI.Sprite(resources.dude.texture);
 
       // Setup the position
-       dude.position.x = 640;
-       dude.position.y = 360;
+       dude.position.x = dude_start_x;
+       dude.position.y = dude_start_y;
 
        // set the anchor point
        dude.anchor.x = 0.5;
@@ -213,13 +296,19 @@ function load_dude(){
         down = keyboard(40);
 
 	// map
-       var map = keyboard(77);
+       var map = keyboard(77); // m
+       var esc = keyboard(27); // esc
+       var reset = keyboard(82); // r
+       var newg = keyboard(81); // q
 
        window.map = map;
        window.up = up;
        window.down = down;
        window.left = left;
        window.right = right;
+       window.esc = esc;
+       window.reset = reset;
+       window.newg = newg;
 
        /// hack to render the map .. but then hide it from view
        window.starmap.alpha = 0.0;
@@ -227,6 +316,79 @@ function load_dude(){
        window.endsquare.alpha = 0.0;
 
 
+       window.esc.press = function() {
+				window.close();
+			};
+
+       window.reset.press = function() {
+		window.world.x = 0;
+		window.world.y = 0;
+		window.dude.rotation = 0;
+		window.dude.scale.x = 1.0;
+		window.dude.scale.y = 1.0;
+		window.dude.alive = true;
+		window.marker.position.x = 30;
+		window.marker.position.y = 30;
+	};
+
+ /*
+       window.newg.press = function() {
+		Object.keys(PIXI.utils.TextureCache).forEach(function(texture) {  PIXI.utils.TextureCache[texture].destroy(true);});
+		window.stage.destroy(true);
+
+		var Container = PIXI.Container;
+		//autoDetectRenderer = PIXI.autoDetectRenderer,
+		var renderer = new PIXI.CanvasRenderer(1280, 720, {view:document.getElementById("game-canvas"), backgroundColor:0xffffff});
+		//renderer.backgroundColor = 0x3333ff;
+		renderer.backgroundColor = 0x000000; 
+		renderer.autoResize = true;
+		renderer.resize(1280, 720);
+		renderer.view.style.position = "absolute";
+		renderer.view.style.display = "block";
+
+		var texture = PIXI.Texture.fromImage("assets/sea.png");
+		var sea = new PIXI.TilingSprite(texture, 19200,10800);
+		sea.position.x = -19200.0 / 2.0
+		sea.position.y = -10800.0 / 2.0
+
+    		loader = PIXI.loader;
+  		resources = PIXI.loader.resources;
+    		Sprite = PIXI.Sprite;
+		var stage = new PIXI.Container();
+		//stage.addChild(sea);
+		window.stage = stage;
+		var world = new PIXI.Container();
+		world.addChild(sea);
+		window.stage.addChild(world);
+		window.world = world;
+		var ship = new PIXI.Container();
+		window.ship = ship;
+		window.loader = loader;
+		window.resources = resources;
+		window.Sprite = Sprite;
+		// todo, get this compatible with WebGL
+		
+		window.renderer = renderer;
+		window.renderer.resize(window.innerWidth, window.innerHeight);
+		window.renderer.render(window.stage);
+
+
+		load_landmasses();
+	   	load_whirlpools();
+	   	load_tornados();
+		setup_dude();
+
+
+		window.world.x = 0;
+		window.world.y = 0;
+		window.dude.rotation = 0;
+		window.dude.scale.x = 1.0;
+		window.dude.scale.y = 1.0;
+		window.dude.alive = true;
+		window.marker.position.x = 30;
+		window.marker.position.y = 30;	
+	};
+  */
 
        window.map.press = function () {
 				if (window.starmap.alpha == 1.0){
@@ -251,6 +413,8 @@ function load_dude(){
 					window.dude.vy = 0.0
 				}				
 			};
+
+	
 
        window.left.release = function() {
 		// If the left arrow has been released, and the right arrow isn't down,

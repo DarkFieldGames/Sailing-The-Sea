@@ -44,8 +44,8 @@ function add_whirlpool(whirlpools,x,y,w,h,shrink,grow,big,small,status){
 				this.status = "inactive";
 				this.time = 0.0;
 			} else {
-				this.scale.x = this.scale.x - (1.0 / (fps * this.shrinkrate));
-				this.scale.y = this.scale.y - (1.0 / (fps * this.shrinkrate));
+				this.scale.x = this.scale.x - (this.maxscale / (fps * this.shrinkrate));
+				this.scale.y = this.scale.y - (this.maxscale / (fps * this.shrinkrate));
 			};
 			if (this.scale.x < 0.0){
 				this.scale.x = 0.0;
@@ -65,12 +65,12 @@ function add_whirlpool(whirlpools,x,y,w,h,shrink,grow,big,small,status){
 				this.status = "active";
 				this.time = 0.0;
 			} else {
-				this.scale.x = this.scale.x + (1.0 / (this.growthrate * fps));
-				this.scale.y = this.scale.y + (1.0 / (this.growthrate * fps));
+				this.scale.x = this.scale.x + (this.maxscale / (this.growthrate * fps));
+				this.scale.y = this.scale.y + (this.maxscale / (this.growthrate * fps));
 			};
-			if (this.scale.x > 1.0){
-				this.scale.x = 1.0;
-				this.scale.y = 1.0;
+			if (this.scale.x > this.maxscale){
+				this.scale.x = this.maxscale;
+				this.scale.y = this.maxscale;
 			};
 		};
 
@@ -86,10 +86,17 @@ function add_whirlpool(whirlpools,x,y,w,h,shrink,grow,big,small,status){
 
 	wpool.position.x = x;
 	wpool.position.y = y;
-	wpool.anchor.x = 0.5
-	wpool.anchor.y = 0.5
+	wpool.anchor.x = 0.5;
+	wpool.anchor.y = 0.5;
 	wpool.w = w;
 	wpool.h = h;  // only relevent to this, otherwise  use width and height
+
+	wpool.scale.x = w / 100.0;
+	wpool.scale.y = h / 100.0;
+	wpool.maxscale = w / 100.0;
+
+//	wpool.scale.x = 1.0
+//	wpool.scale.y = 1.0
 
 	wpool.shrinkrate = shrink; // how long it takes for the whirlpool to shrink
 	wpool.growthrate = grow; // how long it takes for the whirlpool to grow (in seconds)
@@ -111,8 +118,6 @@ function add_tornado(tornados,x,y,w,h,turntime,speed,status){
 	// loop between active, shrink, inactive, grow
 
 	function animate(){
-		console.log("animate");
-		console.log(this.status);
 
 		var vx_thing = 0.0;
 		var vy_thing = 0.0;
@@ -157,7 +162,6 @@ function add_tornado(tornados,x,y,w,h,turntime,speed,status){
 			};
 		};
 
-		console.log((vx_thing * speed / fps));
 
 		this.x = this.x + (vx_thing * speed / fps);
 		this.y = this.y + (vy_thing * speed / fps);
@@ -169,10 +173,15 @@ function add_tornado(tornados,x,y,w,h,turntime,speed,status){
 	// create a texture from an image path
 	var texture = PIXI.Texture.fromImage('assets/tornado.png');
 	// create a new Sprite using the texture
-	var tnado = new PIXI.Sprite(texture);
+	var tnado = new PIXI.Sprite(texture,w,h);
 
 	tnado.position.x = x;
 	tnado.position.y = y;
+
+	tnado.scale.x = w / 100.0;
+	tnado.scale.y = h / 100.0;
+	tnado.maxscale = w / 100.0;
+
 	tnado.anchor.x = 0.5;
 	tnado.anchor.y = 0.5;
 	tnado.w = w;
