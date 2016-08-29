@@ -6,45 +6,8 @@ function load_landmasses(){
 	land.position.x = 0.0;
 	land.position.y = 0.0;
 
-	var land1 = new PIXI.Container(); 
-
-	graphics = new PIXI.Graphics();
-
-	graphics.beginFill(0xFFFF00);
-
-	
-	// set the line style to have a width of 5 and set the color to red
-	graphics.lineStyle(5, 0xFF0000);
-	graphics.drawRect(0, 0, 300, 200);
-
-	// add graphics to container
-	land1.addChild(graphics)
-
-	land1.position.x = 900;
-	land1.position.y = 500;
-	land1.w = 300;
-	land1.h = 200;  // only relevent to this, otherwise  use width and height
-	land.addChild(land1);
-
-
-	var land1 = new PIXI.Container(); 
-
-	graphics = new PIXI.Graphics();
-	graphics.beginFill(0xFFFF00);
-
-	// set the line style to have a width of 5 and set the color to red
-	graphics.lineStyle(5, 0xFF0000);
-	graphics.drawRect(0, 0, 300, 200);
-
-	// add graphics to container
-	land1.addChild(graphics);
-
-	land1.position.x = 100;
-	land1.position.y = 100;
-	land1.w = 300;
-	land1.h = 200;
-
-	land.addChild(land1);
+	add_landmass(land,900,500,300,200);
+	add_landmass(land,100,100,300,200);
 
 	window.world.addChild(land);
 	//window.land = land
@@ -58,16 +21,7 @@ function load_whirlpools(){
 	whirlpools.position.x = 0.0;
 	whirlpools.position.y = 0.0;
 
-	// create a texture from an image path
-	var texture = PIXI.Texture.fromImage('assets/whirlpool.png');
-	// create a new Sprite using the texture
-	var wpool = new PIXI.Sprite(texture);
-
-	wpool.position.x = 900;
-	wpool.position.y = 100;
-	wpool.w = 100;
-	wpool.h = 100;  // only relevent to this, otherwise  use width and height
-	whirlpools.addChild(wpool);
+	add_whirlpool(whirlpools,900,100,100,100,2,2,5,3);
 
 	window.world.addChild(whirlpools);
 	//window.land = land
