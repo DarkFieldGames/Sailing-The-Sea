@@ -28,7 +28,11 @@
     		Sprite = PIXI.Sprite;
 		var stage = new PIXI.Container();
 		window.stage = stage;
-		window.container = Container;
+		var world = new PIXI.Container();
+		window.stage.addChild(world);
+		window.world = world;
+		var ship = new PIXI.Container();
+		window.ship = ship;
 		window.loader = loader;
 		window.resources = resources;
 		window.Sprite = Sprite;

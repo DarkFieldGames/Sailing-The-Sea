@@ -46,13 +46,35 @@ function load_landmasses(){
 
 	land.addChild(land1);
 
-	window.stage.addChild(land);
+	window.world.addChild(land);
 	//window.land = land
-	land.position.x = 0.0;
-	land.position.y = 0.0;
 	window.land = land;
 	
 }
+
+function load_whirlpools(){
+
+	var whirlpools = new PIXI.Container();
+	whirlpools.position.x = 0.0;
+	whirlpools.position.y = 0.0;
+
+	// create a texture from an image path
+	var texture = PIXI.Texture.fromImage('assets/whirlpool.png');
+	// create a new Sprite using the texture
+	var wpool = new PIXI.Sprite(texture);
+
+	wpool.position.x = 900;
+	wpool.position.y = 100;
+	wpool.w = 100;
+	wpool.h = 100;  // only relevent to this, otherwise  use width and height
+	whirlpools.addChild(wpool);
+
+	window.world.addChild(whirlpools);
+	//window.land = land
+	window.whirlpools = whirlpools;
+	
+}
+
 
 function isIntersecting(r1,r2){
 	// check intersection with rectangles
@@ -63,8 +85,8 @@ function isIntersecting(r1,r2){
 	console.log("land");
 	var x = r1.toGlobal(centpoint)["x"];
 	var y = r1.toGlobal(centpoint)["y"];
-	var dude_x = r2.toGlobal(centpoint)["x"] + r2.vx;
-	var dude_y = r2.toGlobal(centpoint)["y"] + r2.vy;
+	var dude_x = r2.toGlobal(centpoint)["x"] + r2.vx - (r2.w / 2.0);
+	var dude_y = r2.toGlobal(centpoint)["y"] + r2.vy - (r2.h / 2.0) ;
 	console.log(r1.toGlobal(centpoint));
 	console.log("you");
 	console.log(r2.toGlobal(centpoint));
@@ -83,8 +105,8 @@ function stopIntersecting(r1,r2){
 	var intersects = isIntersecting(r1,r2);
 
 	if (intersects == true){
-		var dude_x = r2.toGlobal(centpoint)["x"] + r2.vx;
-		var dude_y = r2.toGlobal(centpoint)["y"] + r2.vy;
+		var dude_x = r2.toGlobal(centpoint)["x"] + r2.vx - (r2.w / 2.0);
+		var dude_y = r2.toGlobal(centpoint)["y"] + r2.vy - (r2.h / 2.0);
 		var x = r1.toGlobal(centpoint)["x"];
 		var y = r1.toGlobal(centpoint)["y"];
 		if ((dude_x <= (x + r1.w) && (dude_x + r2.w) >= x) == true){
@@ -115,16 +137,16 @@ function load_dude(){
        dude.position.y = 360;
 
        // set the anchor point
-       dude.anchor.x = 0.0;
-       dude.anchor.y = 0.0;
+       dude.anchor.x = 0.5;
+       dude.anchor.y = 0.5;
 
        // set the scale
-       dude.scale.x = 1.5;
-       dude.scale.y = 1.5;
+       dude.scale.x = 1.0;
+       dude.scale.y = 1.0;
 
 
-       dude.w = 50 * dude.scale.x;
-       dude.h = 50 * dude.scale.y;
+       dude.w = 100.0 * dude.scale.x;
+       dude.h = 75.0 * dude.scale.y;
 
        dude.position.x = dude.position.x - (dude.w / 2.0);
        dude.position.y = dude.position.y - (dude.h / 2.0);
@@ -163,8 +185,10 @@ function load_dude(){
 
 
        window.left.press = function() {
+				/// changing direction
+				window.dude.scale.x = 1;
 				window.dude.vx = -movespeed;
-				window.dude.vy = 0;
+				window.dude.vy = 0.0				
 			};
 
        window.left.release = function() {
@@ -177,6 +201,7 @@ function load_dude(){
 			};
 	
        window.right.press = function() {
+				window.dude.scale.x = -1;
 				window.dude.vx = movespeed;
 				window.dude.vy = 0;
 			};
@@ -214,7 +239,8 @@ function load_dude(){
    };
 
    load_landmasses();
-   PIXI.loader.add("dude","./assets/ship.jpg").load(setup_dude);
+   load_whirlpools();
+   PIXI.loader.add("dude","./assets/ship.png").load(setup_dude);
    
       // This creates a texture from a 'dude.png' image.
   
@@ -265,7 +291,7 @@ function gameLoop() {
 		requestAnimationFrame(gameLoop); 
       		  // ... Code for Drawing the Frame ...
 		play();
-		window.renderer.render(window.stage); 
+		window.renderer.render(window.stage);
 	}, 1000.0 / fps);
 
 }
@@ -281,26 +307,25 @@ function play(){
 		
 	});
 	if (collided == 0){
-		window.land.x += - window.dude.vx;
-		window.land.y += - window.dude.vy;
+		window.world.x += - window.dude.vx;
+		window.world.y += - window.dude.vy;
 	};
 
 	if (collided == 1){
-		window.land.x += 0.0;
-		window.land.y += - window.dude.vy;
+		window.world.x += 0.0;
+		window.world.y += - window.dude.vy;
 	};
 
 	if (collided == 2){
-		window.land.x += - window.dude.vx;
-		window.land.y += 0.0;
+		window.world.x += - window.dude.vx;
+		window.world.y += 0.0;
 	};
 
 	if (collided == 3){
-		window.land.x += 0.0;
-		window.land.y += 0.0;
+		window.world.x += 0.0;
+		window.world.y += 0.0;
 	};
-
-
+	
 
 	console.log("land all");
 	console.log(window.land.x);
