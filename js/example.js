@@ -81,8 +81,8 @@ function load_landmasses(){
 
 	var lands = randomIntFromInterval(150,200);
 	for (i = 0; i < lands; i++){
-		var size_x = randomIntFromInterval(100,300);
-		var size_y = randomIntFromInterval(100,300);
+		var size_x = randomIntFromInterval(100,400);
+		var size_y = randomIntFromInterval(100,400);
 		var land_x = randomIntFromInterval(world_x_small,world_x_large + dude_start_x);
 		if (land_x < dude_start_x + size_x || land_x > world_x_large - dude_start_x - size_x){
 			land_y = randomIntFromInterval(world_y_small + dude_start_y + size_y,world_y_large - dude_start_y - size_y);
@@ -159,7 +159,7 @@ function load_tornados(){
 	for (i = 0; i < tnados; i++){
 		var size = randomIntFromInterval(100,300);
 		var rate = randomIntFromInterval(1.0,3.0);
-		var speed = randomIntFromInterval(400,700);
+		var speed = randomIntFromInterval(300,500);
 		var listitem = list[randomIntFromInterval(0.0,3.0)]
 		var land_x = randomIntFromInterval(world_x_small,world_x_large + dude_start_x);
 		if (land_x < dude_start_x + size || land_x > world_x_large - dude_start_x - size){
@@ -196,6 +196,7 @@ function isIntersecting(r1,r2){
 	// check if r1 has an anchor
 
 	if (typeof(r1.anchor) !== 'undefined'){
+		// todo, fix for whirlpools
 		var x = r1.toGlobal(centpoint)["x"] - (r1.w  / 2.0);
 		var y = r1.toGlobal(centpoint)["y"] - (r1.h  / 2.0);			
 	} else {
