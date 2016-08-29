@@ -196,8 +196,8 @@ function isIntersecting(r1,r2){
 	// check if r1 has an anchor
 
 	if (typeof(r1.anchor) !== 'undefined'){
-		var x = r1.toGlobal(centpoint)["x"] - (r1.w * r1.scale.x / 2.0);
-		var y = r1.toGlobal(centpoint)["y"] - (r1.h * r1.scale.y / 2.0);			
+		var x = r1.toGlobal(centpoint)["x"] - (r1.w  / 2.0);
+		var y = r1.toGlobal(centpoint)["y"] - (r1.h  / 2.0);			
 	} else {
 		var x = r1.toGlobal(centpoint)["x"];
 		var y = r1.toGlobal(centpoint)["y"];
