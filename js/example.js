@@ -22,8 +22,7 @@ function load_whirlpools(){
 	var whirlpools = new PIXI.Container();
 	whirlpools.position.x = 0.0;
 	whirlpools.position.y = 0.0;
-
-	add_whirlpool(whirlpools,900,100,100,100,1,1,4,3,"active");
+	add_whirlpool(whirlpools,900,100,100,100,1.0,1.0,5.0,2.0,"active");
 
 	window.world.addChild(whirlpools);
 	//window.land = land
@@ -31,6 +30,28 @@ function load_whirlpools(){
 	
 }
 
+
+function load_tornados(){
+
+	var tornados = new PIXI.Container();
+	tornados.position.x = 0.0;
+	tornados.position.y = 0.0;
+
+	add_tornado(tornados,100,600,100,100,0.5,600.0,"up");
+
+	window.world.addChild(tornados);
+	//window.land = land
+	window.tornados = tornados;
+	
+}
+
+
+function checkCollision(threat,dude){
+	collide = isIntersecting(threat,dude);
+	if (collide == true && threat.scale.x > 0.0) {
+		dude.alive = false;
+	}
+}
 
 function isIntersecting(r1,r2){
 	// check intersection with rectangles
@@ -103,6 +124,8 @@ function load_dude(){
        dude.position.x = dude.position.x - (dude.w / 2.0);
        dude.position.y = dude.position.y - (dude.h / 2.0);
 
+       dude.alive = true;
+
 
        dude.vx = 0;
        dude.vy = 0;
@@ -132,15 +155,17 @@ function load_dude(){
 
        window.up = up;
        window.down = down;
-	   window.left = left;
-	   window.right = right;
+       window.left = left;
+       window.right = right;
 
 
        window.left.press = function() {
 				/// changing direction
-				window.dude.scale.x = 1;
-				window.dude.vx = -movespeed;
-				window.dude.vy = 0.0				
+				if (window.dude.alive == true) {
+					window.dude.scale.x = 1;
+					window.dude.vx = -movespeed;
+					window.dude.vy = 0.0
+				}				
 			};
 
        window.left.release = function() {
@@ -153,9 +178,11 @@ function load_dude(){
 			};
 	
        window.right.press = function() {
-				window.dude.scale.x = -1;
-				window.dude.vx = movespeed;
-				window.dude.vy = 0;
+				if (window.dude.alive == true) {
+					window.dude.scale.x = -1;
+					window.dude.vx = movespeed;
+					window.dude.vy = 0;
+				}
 			};
 
        window.right.release = function() {
@@ -192,6 +219,7 @@ function load_dude(){
 
    load_landmasses();
    load_whirlpools();
+   load_tornados();
    PIXI.loader.add("dude","./assets/ship.png").load(setup_dude);
    
       // This creates a texture from a 'dude.png' image.
@@ -263,28 +291,60 @@ function play(){
 	
 	window.whirlpools.children.forEach(function(wpool){
 		wpool.animate();
+		checkCollision(wpool,window.dude);
+	});
+
+	window.tornados.children.forEach(function(tnado){
+		tnado.animate();
+		checkCollision(tnado,window.dude);
 	});
 
 
 
-	if (collided == 0){
+	if (collided == 0 && window.dude.alive == true){
 		window.world.x += - window.dude.vx;
 		window.world.y += - window.dude.vy;
 	};
 
-	if (collided == 1){
+	if (collided == 1 && window.dude.alive == true){
 		window.world.x += 0.0;
 		window.world.y += - window.dude.vy;
 	};
 
-	if (collided == 2){
+	if (collided == 2 && window.dude.alive == true){
 		window.world.x += - window.dude.vx;
 		window.world.y += 0.0;
 	};
 
-	if (collided == 3){
+	if (collided == 3 && window.dude.alive == true){
 		window.world.x += 0.0;
 		window.world.y += 0.0;
 	};
-	
+
+	if (window.dude.alive == false){
+		window.dude.rotation += (3.0 / fps);
+		if (window.dude.scale.x < 0.0){
+			window.dude.scale.x = window.dude.scale.x + (1.0 / fps);
+			if (window.dude.scale.x > 0.0) {
+				window.dude.scale.x = 0.0;
+			};
+		} else {
+			window.dude.scale.x = window.dude.scale.x - (1.0 / fps);
+			if (window.dude.scale.x < 0.0) {
+				window.dude.scale.x = 0.0;
+			};
+		};	
+		window.dude.scale.y = window.dude.scale.y- (2.0 / fps);
+		if (window.dude.scale.y < 0.0){
+			window.dude.scale.y = window.dude.scale.y + (1.0 / fps);
+			if (window.dude.scale.y > 0.0) {
+				window.dude.scale.y = 0.0;
+			};
+		} else {
+			window.dude.scale.y = window.dude.scale.y - (1.0 / fps);
+			if (window.dude.scale.y < 0.0) {
+				window.dude.scale.y = 0.0;
+			};
+		};
+	};
 }

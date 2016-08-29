@@ -28,10 +28,7 @@ function add_whirlpool(whirlpools,x,y,w,h,shrink,grow,big,small,status){
 	// loop between active, shrink, inactive, grow
 
 	function animate(){
-		console.log("animate");
-		console.log(this.status);
-		console.log(this.big);
-		console.log(this.time);
+
 		if (this.status == "active") {
 			if (this.time > this.big) {
 				this.status = "shrink";
@@ -95,10 +92,94 @@ function add_whirlpool(whirlpools,x,y,w,h,shrink,grow,big,small,status){
 	wpool.growthrate = grow; // how long it takes for the whirlpool to grow (in seconds)
 	wpool.big = big; // how long the whirlpool should stay max size for
 	wpool.small = small; // how long the whirlpool should shrink for
-	wpool.status = "active";
+	wpool.status = status;
 	wpool.time = 0.0
 	wpool.animate = animate
 
 	whirlpools.addChild(wpool);
+	
+}
+
+
+
+function add_tornado(tornados,x,y,w,h,turntime,speed,status){
+
+	// whirlpool states = active, grow, shrink, inactive
+	// loop between active, shrink, inactive, grow
+
+	function animate(){
+		console.log("animate");
+		console.log(this.status);
+
+		var vx_thing = 0.0;
+		var vy_thing = 0.0;
+
+		if (this.status == "left") {
+			if (this.time > this.turntime) {
+				this.status = "right";
+				this.time = 0.0;
+				vx_thing = 1.0;
+			} else {
+				vx_thing = -1.0;
+			}
+		};
+
+		if (this.status == "right") {
+			if (this.time > this.turntime) {
+				this.status = "left";
+				this.time = 0.0;
+				vx_thing = -1.0;
+			} else {
+				vx_thing = 1.0;
+			};
+		};
+
+		if (this.status == "up") {
+			if (this.time > this.turntime) {
+				this.status = "down";
+				this.time = 0.0;
+				vy_thing = 1.0;
+			} else {
+				vy_thing = -1.0;
+			};
+		};
+
+		if (this.status == "down") {
+			if (this.time > this.turntime) {
+				this.status = "up";
+				this.time = 0.0;
+				vy_thing = -1.0;
+			} else {
+				vy_thing = 1.0;
+			};
+		};
+
+		console.log((vx_thing * speed / fps));
+
+		this.x = this.x + (vx_thing * speed / fps);
+		this.y = this.y + (vy_thing * speed / fps);
+
+		this.time = this.time + (1.0 / fps);
+		
+	};
+		
+	// create a texture from an image path
+	var texture = PIXI.Texture.fromImage('assets/tornado.png');
+	// create a new Sprite using the texture
+	var tnado = new PIXI.Sprite(texture);
+
+	tnado.position.x = x;
+	tnado.position.y = y;
+	tnado.anchor.x = 0.5;
+	tnado.anchor.y = 0.5;
+	tnado.w = w;
+	tnado.h = h;  // only relevent to this, otherwise  use width and height
+
+	tnado.turntime = turntime; // how long it takes for the whirlpool to shrink
+	tnado.status = status;
+	tnado.time = 0.0;
+	tnado.animate = animate
+
+	tornados.addChild(tnado);
 	
 }

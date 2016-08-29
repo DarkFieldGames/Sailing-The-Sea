@@ -10,7 +10,7 @@
   <link rel="stylesheet" type="text/css" href="./css/main.css">
   <body onload="init()" style="background-color: #3333ff;">
   <div align="center">
-    <canvas id="game-canvas" width="1280" height="720", style="background-color: #3333ff;"></canvas>
+    <canvas id="game-canvas" width="1280" height="720", style="background-color: #3333ff; background: assets/sea.png;"></canvas>
   </div>
   <script>
 	function init(){
@@ -18,18 +18,26 @@
 		var Container = PIXI.Container;
 		//autoDetectRenderer = PIXI.autoDetectRenderer,
 		var renderer = new PIXI.CanvasRenderer(1280, 720, {view:document.getElementById("game-canvas"), backgroundColor:0xffffff});
-		renderer.backgroundColor = 0x3333ff; 
+		//renderer.backgroundColor = 0x3333ff;
+		renderer.backgroundColor = 0x000000; 
 		renderer.autoResize = true;
 		renderer.resize(1280, 720);
 		renderer.view.style.position = "absolute";
 		renderer.view.style.display = "block";
 
+		var texture = PIXI.Texture.fromImage("assets/sea.png");
+		var sea = new PIXI.TilingSprite(texture, 19200,10800);
+		sea.position.x = -19200.0 / 2.0
+		sea.position.y = -10800.0 / 2.0
+
     		loader = PIXI.loader;
   		resources = PIXI.loader.resources;
     		Sprite = PIXI.Sprite;
 		var stage = new PIXI.Container();
+		//stage.addChild(sea);
 		window.stage = stage;
 		var world = new PIXI.Container();
+		world.addChild(sea);
 		window.stage.addChild(world);
 		window.world = world;
 		var ship = new PIXI.Container();
