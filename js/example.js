@@ -1,6 +1,64 @@
 var fps = 60.0;
+var world_x_small = -50;
+var world_x_large = 3950.0;
+var world_y_small = -50;
+var world_y_large = 3950.0;
 // for http://stackoverflow.com/questions/24775725/loop-through-childnodes // http://stackoverflow.com/a/24775765
 NodeList.prototype.forEach = Array.prototype.forEach
+var map_height = 700;
+var map_width = 1260;
+var map_dx = map_width / (world_x_large - world_x_small);
+var map_dy = map_height / (world_y_large - world_y_small);
+
+function load_map(){
+	// create a texture from an image path
+	map = new PIXI.Container();
+	map.position.x = 10.0;
+	map.position.y = 10.0;
+	map.width = 1260;
+	map.height = 700;
+	var texture = PIXI.Texture.fromImage('assets/starmap.jpg');
+	// create a new Sprite using the texture
+	var starmap = new PIXI.Sprite(texture,1260,700);
+	starmap.height = 700;
+	starmap.width = 1260;
+
+	// load the marker
+
+
+	map.alpha = 1.0;
+	map.addChild(starmap);
+
+
+	graphics = new PIXI.Graphics();
+	graphics.beginFill(0xFF0000);
+	graphics.drawCircle(0, 0, 10, 10);
+
+
+	marker = new PIXI.Container();
+	marker.addChild(graphics);
+	marker.position.x = 30;
+	marker.position.y = 30;
+	marker.alpha = 1.0;
+
+	endgrap = new PIXI.Graphics();
+	endgrap.beginFill(0x00FF00);
+	endgrap.drawRect(0, 0, 20, 20);
+
+	endsquare = new PIXI.Container();
+	endsquare.addChild(endgrap);
+	endsquare.position.x = 1240;
+	endsquare.position.y = 680;
+	endsquare.alpha = 1.0;
+
+	map.addChild(marker);
+	map.addChild(endsquare);	
+
+	window.stage.addChild(map);
+	window.starmap = starmap;
+	window.marker = marker;
+	window.endsquare = endsquare;
+}
 
 function load_landmasses(){
 
@@ -116,6 +174,7 @@ function load_dude(){
        // set the scale
        dude.scale.x = 1.0;
        dude.scale.y = 1.0;
+       dude.alpha = 1.0
 
 
        dude.w = 100.0 * dude.scale.x;
@@ -153,10 +212,35 @@ function load_dude(){
         right = keyboard(39),
         down = keyboard(40);
 
+	// map
+       var map = keyboard(77);
+
+       window.map = map;
        window.up = up;
        window.down = down;
        window.left = left;
        window.right = right;
+
+       /// hack to render the map .. but then hide it from view
+       window.starmap.alpha = 0.0;
+       window.marker.alpha = 0.0;
+       window.endsquare.alpha = 0.0;
+
+
+
+       window.map.press = function () {
+				if (window.starmap.alpha == 1.0){
+					window.starmap.alpha = 0.0;
+					window.dude.alpha = 1.0;
+					window.marker.alpha = 0.0;
+					window.endsquare.alpha = 0.0;
+				} else {
+					window.starmap.alpha = 1.0;
+					window.dude.alpha = 0.0;
+					window.marker.alpha = 1.0;
+					window.endsquare.alpha = 1.0;
+				};
+			};
 
 
        window.left.press = function() {
@@ -220,6 +304,9 @@ function load_dude(){
    load_landmasses();
    load_whirlpools();
    load_tornados();
+
+   // this loads the dude texture
+   load_map();
    PIXI.loader.add("dude","./assets/ship.png").load(setup_dude);
    
       // This creates a texture from a 'dude.png' image.
@@ -229,6 +316,7 @@ function load_dude(){
 
 
 function keyboard(keyCode) {
+	// character controler handler
 	var key = {};
 	key.code = keyCode;
 	key.isDown = false;
@@ -302,8 +390,32 @@ function play(){
 
 
 	if (collided == 0 && window.dude.alive == true){
-		window.world.x += - window.dude.vx;
-		window.world.y += - window.dude.vy;
+		// world boundaries
+		if ((window.world.x <= -world_x_small) && (window.world.x >= -world_x_large)){
+			window.world.x += - window.dude.vx;
+			window.marker.position.x += window.dude.vx * map_dx;
+		} else {
+			if (window.world.x <= -world_x_small){
+				window.world.x = - world_x_large + 50.0;
+				window.marker.position.x = map_width;
+			} else {
+				window.world.x = 0.0;
+				window.marker.position.x = 0.0; // puts marker back in the x = 0 axis
+				
+			};
+		};
+		if ((window.world.y <= -world_y_small) && (window.world.y >= -world_y_large)){
+			window.world.y += - window.dude.vy;
+			window.marker.position.y += window.dude.vy * map_dy;
+		} else {
+			if (window.world.y <= -world_y_small){
+				window.world.y = - world_y_large + 50.0;
+				window.marker.position.y = map_height;
+			} else {
+				window.world.y = 0.0;
+				window.marker.position.y = 0.0;
+			};
+		};
 	};
 
 	if (collided == 1 && window.dude.alive == true){
