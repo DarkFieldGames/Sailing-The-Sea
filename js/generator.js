@@ -3,13 +3,16 @@ var fps = 60.0;
 function add_landmass(land,x,y,w,h){
 
 	var land1 = new PIXI.Container();
-	graphics = new PIXI.Graphics();
-	graphics.beginFill(0xFFFF00);
+	var texture = PIXI.Texture.fromImage("assets/grass.png");
+	var graphics = new PIXI.TilingSprite(texture, w,h);
+
+//	graphics = new PIXI.Graphics();
+//	graphics.beginFill(0xFFFF00);
 
 	
 	// set the line style to have a width of 5 and set the color to red
-	graphics.lineStyle(5, 0xFF0000);
-	graphics.drawRect(0, 0, 300, 200);
+//	graphics.lineStyle(5, 0xFF0000);
+//	graphics.drawRect(0, 0, 300, 200);
 
 	// add graphics to container
 	land1.addChild(graphics)
